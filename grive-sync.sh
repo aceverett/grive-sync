@@ -33,11 +33,11 @@ GRIVE_BIN=$(which grive)
 ###############################################################################
 [ "$I_HAVE_EDITED" -eq "0" ] && printf "You need to configure $0\n" && exit 1
 
-ps_bin=/bin/ps
-rm_bin=/bin/rm
-grep_bin=/bin/grep
-sed_bin=/bin/sed
-mktemp_bin=/bin/mktemp
+ps_bin=$(which ps)
+rm_bin=$(which rm)
+grep_bin=$(which grep)
+sed_bin=$(which sed)
+mktemp_bin=$(which mktemp)
 
 # Create a temporary log file
 TMPLOG=$($mktemp_bin /tmp/grive-XXXX)
@@ -71,10 +71,10 @@ if ! $ps_bin aux|$grep_bin -q -e '[g]rive '; then
 	${GRIVE_BIN} -p "${GRIVE_DIR}" -l "${TMPLOG}"
 
 	# Get the count of operations
-	_ldeletions=$(grep -c "${REMOVEL_MSG}" "${TMPLOG}")
-	_rdeletions=$(grep -c "${REMOVER_MSG}" "${TMPLOG}")
-	_uploads=$(grep -c "${UPLOAD_MSG}" "${TMPLOG}")
-	_downloads=$(grep -c "${DOWNLOAD_MSG}" "${TMPLOG}")
+	_ldeletions=$($grep_bin -c "${REMOVEL_MSG}" "${TMPLOG}")
+	_rdeletions=$($grep_bin -c "${REMOVER_MSG}" "${TMPLOG}")
+	_uploads=$($grep_bin -c "${UPLOAD_MSG}" "${TMPLOG}")
+	_downloads=$($grep_bin -c "${DOWNLOAD_MSG}" "${TMPLOG}")
 
 	# Setup the notify-osd message
 	notify=""
