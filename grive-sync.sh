@@ -28,7 +28,7 @@ I_HAVE_EDITED=0
 #NOTIFY_ICON="/home/myself/.icons/grive.png"
 
 # Global variables
-GRIVE_DIR="/media/xxxxxx/google\ drive"
+GRIVE_DIR="/media/xxxxxx/google drive"
 GRIVE_BIN=$(which grive)
 
 ###############################################################################
