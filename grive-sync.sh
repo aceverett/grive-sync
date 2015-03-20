@@ -1,31 +1,34 @@
 #!/bin/sh
 ###############################################################################
 # grive-sync
-# This script runs grive and greps the log output to create a
-# notify-osd message indicating what happened
-# It's intended to be called via cron
+# This script is based on Josh Beard's original grive-sync shell script
+# (https://github.com/joshbeard/grive-sync).
+# 
+# The original shell script grep'ed the log file, sending a list of changes
+# to notify-osd. Since this is intended for a headless machine, the notify-osd
+# feature isn't needed.
 #
 # Grive is created by Nestal Wan at https://github.com/Grive/grive/
 # This script is hacked up by Josh Beard at http://signalboxes.net
+# Josh Beard's original script mangled by Adam Everett
 #
 # I don't know how robust this script is and haven't done much testing
 # Feel free to do whatever you want with it.
+# 
 ###############################################################################
 
 # Change this to 1 once you've changed the variables
 I_HAVE_EDITED=0
 
 # This needs to best set for notify-send if calling from cron
-DISPLAY=:0.0
-
-# Path to directory of your Google Drive
-GRIVE_DIR="/home/myself/Grive"
-
+# DISPLAY=:0.0
 # Path to an icon for notify-osd
 #NOTIFY_ICON="/home/josh/.icons/google-drive.png"
-NOTIFY_BIN=$(which notify-send)
-NOTIFY_ICON="/home/myself/.icons/grive.png"
+#NOTIFY_BIN=$(which notify-send)
+#NOTIFY_ICON="/home/myself/.icons/grive.png"
 
+# Global variables
+GRIVE_DIR="/media/xxxxxx/google\ drive"
 GRIVE_BIN=$(which grive)
 
 ###############################################################################
@@ -72,57 +75,57 @@ if ! $ps_bin aux|$grep_bin -q -e '[g]rive '; then
 	${GRIVE_BIN} -l "${TMPLOG}"
 
 	# Get the count of operations
-	_ldeletions=$($grep_bin -c "${REMOVEL_MSG}" "${TMPLOG}")
-	_rdeletions=$($grep_bin -c "${REMOVER_MSG}" "${TMPLOG}")
-	_uploads=$($grep_bin -c "${UPLOAD_MSG}" "${TMPLOG}")
-	_downloads=$($grep_bin -c "${DOWNLOAD_MSG}" "${TMPLOG}")
+	#_ldeletions=$($grep_bin -c "${REMOVEL_MSG}" "${TMPLOG}")
+	#_rdeletions=$($grep_bin -c "${REMOVER_MSG}" "${TMPLOG}")
+	#_uploads=$($grep_bin -c "${UPLOAD_MSG}" "${TMPLOG}")
+	#_downloads=$($grep_bin -c "${DOWNLOAD_MSG}" "${TMPLOG}")
 
 	# Setup the notify-osd message
-	notify=""
-	if [ $_ldeletions -gt 0 ]; then
-		# If it's only one file, show the filename
-		if [ $_ldeletions -eq 1 ]; then
-			_filename=$(get_filename "${REMOVEL_MSG}")
-			notify="$_filename removed from local"
-		else
-			notify="${_ldeletions} removed from local"
-		fi
-	fi
+	#notify=""
+	#if [ $_ldeletions -gt 0 ]; then
+	#	# If it's only one file, show the filename
+	#	if [ $_ldeletions -eq 1 ]; then
+	#		_filename=$(get_filename "${REMOVEL_MSG}")
+	#		notify="$_filename removed from local"
+	#	else
+	#		notify="${_ldeletions} removed from local"
+	#	fi
+	#fi
 
-	if [ $_rdeletions -gt 0 ]; then
-		[ ! -z "$notify" ] && notify="${notify}\n"
-		if [ $_rdeletions -eq 1 ]; then
-			_filename=$(get_filename "${REMOVER_MSG}")
-			notify="$_filename removed from remote"
-		else
-			notify="${_rdeletions} removed from remote"
-		fi
-	fi
+	#if [ $_rdeletions -gt 0 ]; then
+	#	[ ! -z "$notify" ] && notify="${notify}\n"
+	#	if [ $_rdeletions -eq 1 ]; then
+	#		_filename=$(get_filename "${REMOVER_MSG}")
+	#		notify="$_filename removed from remote"
+	#	else
+	#		notify="${_rdeletions} removed from remote"
+	#	fi
+	#fi
 
-	if [ $_uploads -gt 0 ]; then
-		[ ! -z "$notify" ] && notify="${notify}\n"
-		if [ $_uploads -eq 1 ]; then
-			_filename=$(get_filename "${UPLOAD_MSG}")
-			notify="${notify}$_filename uploaded"
-		else
-			notify="${notify}${_uploads} uploaded"
-		fi
-	fi
+	#if [ $_uploads -gt 0 ]; then
+	#	[ ! -z "$notify" ] && notify="${notify}\n"
+	#	if [ $_uploads -eq 1 ]; then
+	#		_filename=$(get_filename "${UPLOAD_MSG}")
+	#		notify="${notify}$_filename uploaded"
+	#	else
+	#		notify="${notify}${_uploads} uploaded"
+	#	fi
+	#fi
 
-	if [ $_downloads -gt 0 ]; then
-		[ ! -z "$notify" ] && notify="${notify}\n"
-		if [ $_downloads -eq 1 ]; then
-			_filename=$(get_filename "${DOWNLOAD_MSG}")
-			notify="${notify}$_filename downloaded"
-		else
-			notify="${notify}${_downloads} downloaded"
-		fi
-	fi
+	#if [ $_downloads -gt 0 ]; then
+	#	[ ! -z "$notify" ] && notify="${notify}\n"
+	#	if [ $_downloads -eq 1 ]; then
+	#		_filename=$(get_filename "${DOWNLOAD_MSG}")
+	#		notify="${notify}$_filename downloaded"
+	#	else
+	#		notify="${notify}${_downloads} downloaded"
+	#	fi
+	#fi
 
 	# Display the notify-osd message
-	if [ ! -z "$notify" ]; then
-		${NOTIFY_BIN} -i "${NOTIFY_ICON}" "Grive" "$notify"
-	fi
+	#if [ ! -z "$notify" ]; then
+	#	${NOTIFY_BIN} -i "${NOTIFY_ICON}" "Grive" "$notify"
+	#fi
 
 	# Remove the grive ouput log	
 	$rm_bin -f "${TMPLOG}"
