@@ -29,7 +29,7 @@ I_HAVE_EDITED=0
 
 # Global variables
 GRIVE_DIR="/media/xxxxxx/google drive"
-GRIVE_BIN=$(which grive)
+GRIVE_BIN=$(command -v grive)
 
 ###############################################################################
 # You don't need to edit below here unless you really want to
